@@ -1,18 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:test/State-Architecture-MVVM/ui/screens/library/widgets/library_content.dart';
 
 import '../../../data/repositories/songs/song_repository.dart';
-import '../../../model/songs/song.dart';
 import '../../states/player_state.dart';
 import '../../states/settings_state.dart';
-import '../../theme/theme.dart';
+import 'widgets/library_content.dart';
+import 'view_models/library_view_model.dart';
 
 class LibraryScreen extends StatelessWidget {
   const LibraryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final songRepository = context.read<SongRepository>();
+    final settingsState = context.read<AppSettingsState>();
+    final playerState = context.watch<PlayerState>();
+
+    return Provider<LibraryViewModel>(
+      create: (_) => LibraryViewModel(
+        songs: songRepository.fetchSongs(),
+        settingsState: settingsState,
+        playerState: playerState,
+      ),
+      child: LibraryContent(),
+    );
+  }
+}
     // 1- Read the globbal song repository
     // SongRepository songRepository = context.read<SongRepository>();
     // List<Song> songs = songRepository.fetchSongs();
@@ -76,6 +89,6 @@ class LibraryScreen extends StatelessWidget {
     //   }
     // }
 
-    return const LibraryContent();
-  }
-}
+//     return const LibraryContent();
+//   }
+// }
